@@ -1,4 +1,6 @@
 import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Empresa {
 
@@ -16,4 +18,38 @@ public class Empresa {
         System.out.println(listaVuelos);
     }
 
+
+    public Set<Vuelo> filtrarPorFecha(String fecha){
+        return listaVuelos.stream()
+                .filter(vuelo -> vuelo.getFecha().equals(fecha) )
+                .collect(Collectors.toSet()) ;
+    }
+    public Set<Vuelo> filtrarOrigenDestino(Ciudad origen, Ciudad destino){
+        return listaVuelos.stream()
+                .filter(vuelo -> vuelo.getOrigen().equals(origen) && vuelo.getDestino().equals(destino))
+                .collect(Collectors.toSet()) ;
+    }
+
+    public Set<Vuelo> filtrarPorDuracion(int duracionMaxima){
+        return listaVuelos.stream()
+                .filter(vuelo -> vuelo.getDuracion() <= duracionMaxima ).
+                        collect(Collectors.toSet());
+    }
+
+
+    public Set<Vuelo> filtrarPorAerolinea(Aerolinea aerolinea){
+        return listaVuelos.stream()
+                .filter(vuelo -> vuelo.getAerolinea().equals(aerolinea) )
+                .collect(Collectors.toSet()) ;
+
+    }
+
+    public Set<Vuelo> filtrarPorEscalas(int cantEscalas){
+        return listaVuelos.stream()
+                .filter(vuelo -> vuelo.getEscalas() <= cantEscalas ).
+                collect(Collectors.toSet());
+    }
+
+    //Combinaciones entre estos metodos en un nuevo metodo --> Ojo con las listas que me quedan entre metodos.
+    //Mostrar ID en la lista del metodo para luego poder reservar con ese ID
 }

@@ -3,8 +3,8 @@ import java.util.HashSet;
 public class Vuelo {
 
     private int id;
-    private int fecha; //Formato DD/MM/AAAA
-    private int horario;
+    private String fecha; //Formato DD/MM/AAAA
+    private String horario;
     private Ciudad origen;
     private Ciudad destino;
     private int duracion;
@@ -12,7 +12,9 @@ public class Vuelo {
     private Aerolinea aerolinea;
     private Equipaje equipajeVuelo;
 
-    public Vuelo(int id, int fecha, int horario, Ciudad origen, Ciudad destino, int duracion, int escalas, Aerolinea aerolinea, Equipaje equipajeVuelo) {
+    private int precioEconomy;
+
+    public Vuelo(int id, String fecha, String horario, Ciudad origen, Ciudad destino, int duracion, int escalas, Aerolinea aerolinea, Equipaje equipajeVuelo) {
         this.id = id;
         this.fecha = fecha;
         this.horario = horario;
@@ -73,6 +75,7 @@ public class Vuelo {
     }
 
     public void mostrarPrecios(){
+
         int precioEconomy = getPrecioEconomy();
         int precioSuper = getPrecioSuper();
         int precioPrimera = getPrecioPrimera();
@@ -103,5 +106,27 @@ public class Vuelo {
 
     //Resolver el problema de que tengamos 3 precios distintos dependiendo de los asientos.
 
+    public String getFecha() {
+        return fecha;
+    }
 
+    public String getHorario() {
+        return horario;
+    }
+
+    public Ciudad getOrigen() {
+        return origen;
+    }
+
+    public Ciudad getDestino() {
+        return destino;
+    }
+
+    public Aerolinea getAerolinea() {
+        return aerolinea;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
