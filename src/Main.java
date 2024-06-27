@@ -36,6 +36,17 @@ public class Main {
         vuelosFiltradoPorOrigenDestino.forEach(vuelo -> System.out.println(vuelo.getId()));
 
 
+        Pasaje pasaje;
+        try {
+            pasaje = vuelosUADE.generarPasaje(54, "hjgjhg");
+
+        } catch ( Exception e ) {
+            System.out.println("Hubo una excpcion");
+        }
+//        pasaje = vuelosUADE.generarPasaje(88, "Azul");
+
+//        System.out.println("mi pasaje" + pasaje);
+
 
     }
 }

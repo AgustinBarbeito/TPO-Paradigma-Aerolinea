@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 public class Empresa {
 
     private HashSet <Vuelo> listaVuelos;
+    private HashSet <Pasaje> listaPasajes;
 
     public Empresa() {
         listaVuelos = new HashSet<>();
@@ -52,20 +53,25 @@ public class Empresa {
     }
 
 
-    public Vuelo getVueloByID(int id){
+    public Optional<Vuelo> getVueloByID(int id){
         Optional<Vuelo> optionalVuelo = listaVuelos
-                .stream().filter(vuelo -> vuelo.getId() == id).filter()
+                .stream()
+                .filter(vuelo -> vuelo.getId() == id)
+                .findFirst();
 
-        if(optionalVuelo = true){
+            return optionalVuelo;
 
         }
 
-    }
     public Pasaje generarPasaje(int idVuelo, String persona){
-        boolean verificarID = getVueloByID(idVuelo);
-        if(verificarID):
+        Optional<Vuelo> cajaDelVuelo = getVueloByID(idVuelo);
 
+        Vuelo vuelo = cajaDelVuelo.orElseThrow();
+        vuelo.decrementarCantidad();
+        Pasaje pasaje = new Pasaje(persona, vuelo);
+        listaPasajes.add(pasaje);
 
+        return pasaje;
 
     }
     //Combinaciones entre estos metodos en un nuevo metodo --> Ojo con las listas que me quedan entre metodos.
