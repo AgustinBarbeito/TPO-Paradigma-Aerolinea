@@ -1,3 +1,5 @@
+import java.util.Set;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -19,12 +21,20 @@ public class Main {
 
         Empresa vuelosUADE = new Empresa();
 
-        Vuelo vuelo1 = new Vuelo(1,10/02/2025,15-00,buenosAires,miami,8,2,aar,equipajeParaDespachar);
-                                                //Esta tomando fecha y horario como operaciones matematica --> cambiar los valores a string y listo
+        Vuelo vuelo1 = new Vuelo(1,"10/02/2025","15:00",buenosAires,miami,8,2,aar,equipajeParaDespachar);
+        Vuelo vuelo2 = new Vuelo(2,"10/02/2025","15:00",buenosAires,miami,7,2,aar,equipajeParaDespachar);
+        Vuelo vuelo8 = new Vuelo(8,"10/02/2025","15:00",buenosAires,miami,6,1,aa,equipajeParaDespachar);
+
         vuelo1.mostrarPrecios();
 
         vuelosUADE.guardarVuelo(vuelo1);
+        vuelosUADE.guardarVuelo(vuelo2);
+        vuelosUADE.guardarVuelo(vuelo8);
         vuelosUADE.mostrarVuelo();
+        Set<Vuelo> vuelosFiltradoPorOrigenDestino = vuelosUADE.filtrarOrigenDestino(buenosAires,miami);
+        System.out.println("IDs de mis vuelos filtrados: ");
+        vuelosFiltradoPorOrigenDestino.forEach(vuelo -> System.out.println(vuelo.getId()));
+
 
 
     }
