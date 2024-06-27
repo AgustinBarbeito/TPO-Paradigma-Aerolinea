@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,23 @@ public class Empresa {
                 collect(Collectors.toSet());
     }
 
+
+    public Vuelo getVueloByID(int id){
+        Optional<Vuelo> optionalVuelo = listaVuelos
+                .stream().filter(vuelo -> vuelo.getId() == id).filter()
+
+        if(optionalVuelo = true){
+
+        }
+
+    }
+    public Pasaje generarPasaje(int idVuelo, String persona){
+        boolean verificarID = getVueloByID(idVuelo);
+        if(verificarID):
+
+
+
+    }
     //Combinaciones entre estos metodos en un nuevo metodo --> Ojo con las listas que me quedan entre metodos.
     //Mostrar ID en la lista del metodo para luego poder reservar con ese ID
 }
