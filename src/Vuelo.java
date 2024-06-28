@@ -11,8 +11,9 @@ public class Vuelo {
     private int escalas;
     private Aerolinea aerolinea;
     private Equipaje equipajeVuelo;
-
     private int precioEconomy;
+    private int precioSuper;
+    private int precioPrimera;
 
     public Vuelo(int id, String fecha, String horario, Ciudad origen, Ciudad destino, int duracion, int escalas, Aerolinea aerolinea, Equipaje equipajeVuelo) {
         this.id = id;
@@ -89,18 +90,21 @@ public class Vuelo {
 
     public int getPrecioEconomy(){
         int precioEconomy = calcularPrecioEscala();
+        this.setPrecioEconomy(precioEconomy);
         return precioEconomy;
     }
 
     public int getPrecioSuper(){
         int precioSuper = getPrecioEconomy();
         precioSuper = (int) (precioSuper * 1.5);
+        this.setPrecioSuper(precioSuper);
         return precioSuper;
     }
 
     public int getPrecioPrimera(){
         int precioPrimera = getPrecioEconomy();
         precioPrimera = (int) (precioPrimera * 2);
+        this.setPrecioPrimera(precioPrimera);
         return precioPrimera;
     }
 
@@ -128,5 +132,21 @@ public class Vuelo {
 
     public int getId() {
         return id;
+    }
+
+    public void setPrecioEconomy(int precioEconomy) {
+        this.precioEconomy = precioEconomy;
+    }
+
+    public void setPrecioSuper(int precioSuper) {
+        this.precioSuper = precioSuper;
+    }
+
+    public void setPrecioPrimera(int precioPrimera) {
+        this.precioPrimera = precioPrimera;
+    }
+
+    public Equipaje getEquipajeVuelo() {
+        return equipajeVuelo;
     }
 }

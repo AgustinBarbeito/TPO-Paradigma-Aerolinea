@@ -25,6 +25,9 @@ public class Main {
         Vuelo vuelo2 = new Vuelo(2,"10/02/2025","15:00",buenosAires,miami,7,2,aar,equipajeParaDespachar);
         Vuelo vuelo8 = new Vuelo(8,"10/02/2025","15:00",buenosAires,miami,6,1,aa,equipajeParaDespachar);
 
+        MetodoDePago visa = new MetodoDePago();
+        MetodoDePago amex = new MetodoDePago();
+        MetodoDePago master = new MetodoDePago();
         vuelo1.mostrarPrecios();
 
         vuelosUADE.guardarVuelo(vuelo1);
@@ -36,16 +39,10 @@ public class Main {
         vuelosFiltradoPorOrigenDestino.forEach(vuelo -> System.out.println(vuelo.getId()));
 
 
-        Pasaje pasaje;
-        try {
-            pasaje = vuelosUADE.generarPasaje(54, "hjgjhg");
 
-        } catch ( Exception e ) {
-            System.out.println("Hubo una excpcion");
-        }
-//        pasaje = vuelosUADE.generarPasaje(88, "Azul");
+        vuelosUADE.solicitarPasaje(1,"Azul", 2,visa);
 
-//        System.out.println("mi pasaje" + pasaje);
+        vuelosUADE.mostrarPasajes();
 
 
     }
