@@ -1,17 +1,17 @@
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Scanner;
 
 public class Empresa {
 
     private HashSet<Vuelo> listaVuelos;
     private HashSet<Pasaje> listaPasajes;
+    private ArrayList<Ciudad> listaCiudades;
 
-    public Empresa() {
+    public Empresa(ArrayList<Ciudad> listaCiudad) {
         listaVuelos = new HashSet<>();
         listaPasajes = new HashSet<>();
+        listaCiudades = listaCiudad;
     }
 
     public void guardarVuelo(Vuelo vuelo) {
@@ -26,27 +26,174 @@ public class Empresa {
         System.out.println(listaPasajes);
     }
 
+    //--------------------------------------Menu Filtrado---------------------------------------------------------------//
+
+    public void menuFiltradoVuelos(){
+        System.out.println("Seleccione la opcion deseada para filtrar su vuelo: ");
+        System.out.println("");
+        System.out.println("1) Filtrar por fecha");
+        System.out.println("2) Filtrar por origen y destino");
+        System.out.println("3) Filtrar por duracion");
+        System.out.println("4) Filtrar por aerolinea");
+        System.out.println("5) Filtrar por cantidad de escalas maximas");
+        System.out.println("");
+        int opcionSeleccionada = opcionSeleccionadaFiltrar();
 
 
-    public Set<Vuelo> filtrarPorFecha(String fecha) {
+
+
+
+    }
+
+    public void llamarMetodo(int opcion){
+        if (opcion == 1){
+            filtrarFecha();
+        } else if (opcion == 2) {
+            filtrarOrigenDestino();
+        } else if (opcion == 3){
+            filtrarPorDuracion();
+        }
+    }
+
+    public int opcionSeleccionadaFiltrar(){
+        Scanner scanner = new Scanner(System.in);
+        int seleccion = 0;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            if (scanner.hasNextInt()) {
+                seleccion = scanner.nextInt();
+                if (seleccion >= 1 && seleccion <= 5) {
+                    entradaValida = true;
+                } else {
+                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 1 como minimo y 5 como maximo");
+                }
+            } else {
+                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                scanner.next();
+            }
+        }
+        return seleccion;
+    }
+
+
+    //--------------------------------------Seccion filtrado de vuelos--------------------------------------------------//
+
+    //Filtrar por fecha---
+    public Set<Vuelo> filtrarFecha() {
+        String fecha = inputFecha();
         return listaVuelos.stream()
                 .filter(vuelo -> vuelo.getFecha().equals(fecha))
                 .collect(Collectors.toSet());
     }
+    public String inputFecha() {
+        Scanner scanner = new Scanner(System.in);
+        String fechaIngresada;
+        boolean entradaValida = false;
 
-    public Set<Vuelo> filtrarOrigenDestino(Ciudad origen, Ciudad destino) {
+        while (!entradaValida) {
+            System.out.println("Ingrese una fecha en formato dd/MM/yyyy:");
+            fechaIngresada = scanner.nextLine();
+
+            if (esFormatoFechaValido(fechaIngresada)) {
+                entradaValida = true;
+                return fechaIngresada;
+            } else {
+                System.out.println("La fecha ingresada no tiene el formato correcto (dd/MM/yyyy). Por favor, intente nuevamente.");
+            }
+        }
+
+        return null;
+    }
+
+    private boolean esFormatoFechaValido(String fecha) {
+        // Verificar que la fecha tenga el formato dd/MM/yyyy
+        if (fecha == null || fecha.length() != 10) {
+            return false;
+        }
+
+        try {
+            int dia = Integer.parseInt(fecha.substring(0, 2));
+            int mes = Integer.parseInt(fecha.substring(3, 5));
+            int año = Integer.parseInt(fecha.substring(6));
+
+            return dia >= 1 && dia <= 31 && mes >= 1 && mes <= 12 && año >= 1000 && año <= 9999;
+        } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+            return false;
+        }
+    }
+
+    //Filtrar por origen y destino
+    public Set<Vuelo> filtrarOrigenDestino() {
+        System.out.println("Seleccione la ciudad de origen: ");
+        for (Ciudad ciudad: this.listaCiudades){
+            System.out.println(this.listaCiudades.indexOf(ciudad) + "-" + ciudad.getNombre());
+        }
+        int origenIndex = inputCiudad();
+        Ciudad origen = listaCiudades.get(origenIndex);
+
+        System.out.println("Seleccione la ciudad de destino: ");
+        for (Ciudad ciudad: this.listaCiudades){
+            System.out.println(this.listaCiudades.indexOf(ciudad) + "-" + ciudad.getNombre());
+        }
+        int destinoIndex = inputCiudad();
+        Ciudad destino = listaCiudades.get(destinoIndex);
+
         return listaVuelos.stream()
                 .filter(vuelo -> vuelo.getOrigen().equals(origen) && vuelo.getDestino().equals(destino))
                 .collect(Collectors.toSet());
     }
 
-    public Set<Vuelo> filtrarPorDuracion(int duracionMaxima) {
+    public int inputCiudad() {
+        Scanner scanner = new Scanner(System.in);
+        int seleccion = 0;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            if (scanner.hasNextInt()) {
+                seleccion = scanner.nextInt();
+                if (seleccion >= 0 && seleccion <= 6) {
+                    entradaValida = true;
+                } else {
+                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 6 como maximo");
+                }
+            } else {
+                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                scanner.next();
+            }
+        }
+        return seleccion;
+    }
+
+    public Set<Vuelo> filtrarPorDuracion() {
+        int duracionMaxima = opcionSeleccionadaDuracion();
         return listaVuelos.stream()
                 .filter(vuelo -> vuelo.getDuracion() <= duracionMaxima).
                 collect(Collectors.toSet());
     }
+    public int opcionSeleccionadaDuracion(){
+        System.out.println("Ingrese la duracion maxima desea para su vuelo en horas: ");
+        Scanner scanner = new Scanner(System.in);
+        int seleccion = 0;
+        boolean entradaValida = false;
 
+        while (!entradaValida) {
+            if (scanner.hasNextInt()) {
+                seleccion = scanner.nextInt();
+                if (seleccion >= 1 && seleccion <= 24) {
+                    entradaValida = true;
+                } else {
+                    System.out.println("El numero ingresado no es valido. Por favor, ingrese como minimo 1 y como maximo 24 ");
+                }
+            } else {
+                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                scanner.next();
+            }
+        }
+        return seleccion;
+    }
 
+    //Filtrar por aerolinea
     public Set<Vuelo> filtrarPorAerolinea(Aerolinea aerolinea) {
         return listaVuelos.stream()
                 .filter(vuelo -> vuelo.getAerolinea().equals(aerolinea))
@@ -54,12 +201,37 @@ public class Empresa {
 
     }
 
+    //Filtrar por escalas
     public Set<Vuelo> filtrarPorEscalas(int cantEscalas) {
         return listaVuelos.stream()
                 .filter(vuelo -> vuelo.getEscalas() <= cantEscalas).
                 collect(Collectors.toSet());
     }
+    public int opcionSeleccionadaEscalas(){
+        System.out.println("Ingrese la cantidad maxima de escalas: ");
+        Scanner scanner = new Scanner(System.in);
+        int seleccion = 0;
+        boolean entradaValida = false;
 
+        while (!entradaValida) {
+            if (scanner.hasNextInt()) {
+                seleccion = scanner.nextInt();
+                if (seleccion >= 0 && seleccion <= 3) {
+                    entradaValida = true;
+                } else {
+                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 3 como maximo");
+                }
+            } else {
+                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                scanner.next();
+            }
+        }
+        return seleccion;
+    }
+
+
+
+    //-----------------------------------------Seccion reserva de pasaje--------------------------------------------------------------//
 
     public void solicitarPasaje(int idVuelo, String persona, int cantidadPasajes, MetodoDePago metodoSeleccionado) { //aca pido la cantidad de pasajes que voy a querer, muestro el precio total y confirmo la compra
 
@@ -70,6 +242,7 @@ public class Empresa {
 
         if (pagoConfirmado){
             Pasaje pasajeNuevo = generarPasaje(vuelo, persona, cantidadPasajes, metodoSeleccionado);
+            pasajeNuevo.setNumeroDeReserva(generarNumeroReserva());
         } else {
             System.out.println("El pago no fue realizado correctamente. Intentenlo nuevamente por favor.");
         }
@@ -138,18 +311,33 @@ public class Empresa {
 
     public boolean verificarPago(int precio, MetodoDePago metodoDePago){ //Aca deberia ir el proceso de verificacion de compra
         boolean pagoConfirmado = false;
-        System.out.println("Su pago de " + precio + " se procesara con su metodo de pago " + metodoDePago);
-        System.out.println("Procesando su pago");
-        System.out.println(".");
-        System.out.println("..");
-        System.out.println("..."); //buscar un timer para los sout
-        System.out.println(".");
-        System.out.println("..");
-        System.out.println("...");
-        System.out.println("...");
-        System.out.println("Sigue procesando...");
-        System.out.println("Su pago se realizo correctamente :)");
-        pagoConfirmado = true;
+        try {
+            System.out.println("Su pago de " + precio + " se procesará con su método de pago " + metodoDePago);
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("Procesando su pago");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println(".");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("..");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("...");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println(".");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("..");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("...");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("...");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("Sigue procesando...");
+            Thread.sleep(1000); // Pausa de 1 segundo
+            System.out.println("Su pago se realizó correctamente :)");
+            pagoConfirmado = true;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("El hilo fue interrumpido");
+        }
         return pagoConfirmado;
     }
 
@@ -170,6 +358,11 @@ public class Empresa {
         listaPasajes.add(pasaje);
         return pasaje;
 
+    }
+
+    private int generarNumeroReserva() {
+        Random random = new Random();
+        return 100000 + random.nextInt(900000);
     }
     //Combinaciones entre estos metodos en un nuevo metodo --> Ojo con las listas que me quedan entre metodos.
     //Mostrar ID en la lista del metodo para luego poder reservar con ese ID

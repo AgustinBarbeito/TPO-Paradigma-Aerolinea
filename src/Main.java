@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Main {
@@ -11,15 +13,27 @@ public class Main {
         Aerolinea aa = new Aerolinea("American Airlines", 600);
         Aerolinea fly = new Aerolinea("FlyBondi", 200);
 
-        Ciudad buenosAires = new Ciudad();
-        Ciudad roma = new Ciudad();
-        Ciudad rio = new Ciudad();
-        Ciudad miami = new Ciudad();
-        Ciudad santiago = new Ciudad();
-        Ciudad madrid = new Ciudad();
-        Ciudad tokyo = new Ciudad();
+        ArrayList<Ciudad> listaCiudades = new ArrayList<>();
 
-        Empresa vuelosUADE = new Empresa();
+        Ciudad buenosAires = new Ciudad("Buenos Aires");
+        Ciudad roma = new Ciudad("Roma");
+        Ciudad rio = new Ciudad("Rio");
+        Ciudad miami = new Ciudad("Miami");
+        Ciudad santiago = new Ciudad("Santiago");
+        Ciudad madrid = new Ciudad("Madrid");
+        Ciudad tokyo = new Ciudad("Tokyo");
+
+
+        listaCiudades.add(buenosAires);
+        listaCiudades.add(roma);
+        listaCiudades.add(rio);
+        listaCiudades.add(miami);
+        listaCiudades.add(santiago);
+        listaCiudades.add(madrid);
+        listaCiudades.add(tokyo);
+
+
+        Empresa vuelosUADE = new Empresa(listaCiudades);
 
         Vuelo vuelo1 = new Vuelo(1,"10/02/2025","15:00",buenosAires,miami,8,2,aar,equipajeParaDespachar);
         Vuelo vuelo2 = new Vuelo(2,"10/02/2025","15:00",buenosAires,miami,7,2,aar,equipajeParaDespachar);
@@ -34,15 +48,19 @@ public class Main {
         vuelosUADE.guardarVuelo(vuelo2);
         vuelosUADE.guardarVuelo(vuelo8);
         vuelosUADE.mostrarVuelo();
-        Set<Vuelo> vuelosFiltradoPorOrigenDestino = vuelosUADE.filtrarOrigenDestino(buenosAires,miami);
+
+        Set<Vuelo> vuelosFiltradoPorOrigenDestino = vuelosUADE.filtrarOrigenDestino();
         System.out.println("IDs de mis vuelos filtrados: ");
         vuelosFiltradoPorOrigenDestino.forEach(vuelo -> System.out.println(vuelo.getId()));
-
+        Set<Vuelo> vuelosFiltradoPorFecha = vuelosUADE.filtrarFecha();
+        System.out.println(("IDs de mis vuelos filtrados: "));
+        vuelosFiltradoPorFecha.forEach(vuelo -> System.out.println(vuelo.getId()));
 
 
         vuelosUADE.solicitarPasaje(1,"Azul", 2,visa);
 
         vuelosUADE.mostrarPasajes();
+
 
 
     }

@@ -13,4 +13,9 @@ public class Pasaje {
         this.cantAsientosReservados = cantAsientosReservados;
         this.metodoDePago = metodoDePago;
     }
+
+    public void setNumeroDeReserva(int numeroDeReserva) {
+        this.numeroDeReserva = numeroDeReserva;
+    }
+
 }
