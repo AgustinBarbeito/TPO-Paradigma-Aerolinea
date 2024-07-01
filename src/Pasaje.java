@@ -2,9 +2,10 @@ public class Pasaje {
 
     private String nombre;
     private Vuelo vuelo;
-    private int numeroDeReserva; //Una vez creado el pasaje hacer un set con un numero de reserva random
+    private int numeroDeReserva;
     private int cantAsientosReservados;
     private MetodoDePago metodoDePago;
+    private int montoFinal;
 
 
     public Pasaje(String nombre, Vuelo vuelo, int cantAsientosReservados, MetodoDePago metodoDePago) {
@@ -18,4 +19,31 @@ public class Pasaje {
         this.numeroDeReserva = numeroDeReserva;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Vuelo getVuelo() {
+        return vuelo;
+    }
+
+    public int getNumeroDeReserva() {
+        return numeroDeReserva;
+    }
+
+    public int getCantAsientosReservados() {
+        return cantAsientosReservados;
+    }
+
+    public MetodoDePago getMetodoDePago() {
+        return metodoDePago;
+    }
+
+    public int getMontoFinal() {
+        return montoFinal;
+    }
+
+    public void setMontoFinal(int montoFinal) {
+        this.montoFinal = montoFinal;
+    }
 }

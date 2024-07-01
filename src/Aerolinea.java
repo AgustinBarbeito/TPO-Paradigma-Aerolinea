@@ -10,5 +10,9 @@ public class Aerolinea {
     public int getPrecioBase() {
         return precioBase;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
 }
 

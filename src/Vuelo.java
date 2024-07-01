@@ -108,7 +108,6 @@ public class Vuelo {
         return precioPrimera;
     }
 
-    //Resolver el problema de que tengamos 3 precios distintos dependiendo de los asientos.
 
     public String getFecha() {
         return fecha;
