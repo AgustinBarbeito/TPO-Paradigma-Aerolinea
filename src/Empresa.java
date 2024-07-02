@@ -5,13 +5,15 @@ import java.util.Scanner;
 
 public class Empresa {
 
+    private String nombre;
     private HashSet<Vuelo> listaVuelos;
     private HashSet<Pasaje> listaPasajes;
     private ArrayList<Ciudad> listaCiudades;
     private ArrayList<Aerolinea> listaAerolineas;
     private ArrayList<MetodoDePago> listaMetodosDePago;
 
-    public Empresa(ArrayList<Ciudad> listaCiudad, ArrayList<Aerolinea> listaAerolinea,ArrayList<MetodoDePago> listaMetodos) {
+    public Empresa(String nombreEmpresa, ArrayList<Ciudad> listaCiudad, ArrayList<Aerolinea> listaAerolinea,ArrayList<MetodoDePago> listaMetodos) {
+        nombre = nombreEmpresa;
         listaVuelos = new HashSet<>();
         listaPasajes = new HashSet<>();
         listaCiudades = listaCiudad;
@@ -24,43 +26,111 @@ public class Empresa {
     }
 
     public void mostrarVuelo() {
-        System.out.println(listaVuelos);
+        Visualizador.getInstancia().visualizarMensaje("Lista de vuelos completa: \n");
+        for (Vuelo vuelo: this.listaVuelos) {
+            Visualizador.getInstancia().visualizarMensaje(
+                    ("Numero de ID: " + vuelo.getId() + "\n") +
+                    ("Fecha: " + vuelo.getFecha() + "\n") +
+                    ("Horario: " + vuelo.getHorario() + "\n") +
+                    ("Ciudad de origen: " + vuelo.getOrigen() + "\n") +
+                    ("Ciudad de destino: " + vuelo.getDestino() + "\n") +
+                    ("Duracion total: " + vuelo.getDuracion() + "\n") +
+                    ("Cantidad de escalas: " + vuelo.getEscalas() + "\n") +
+                    ("Aerolinea: " + vuelo.getAerolinea() + "\n") +
+                    ("Tipo de equipaje: " + vuelo.getEquipajeVuelo() + "\n"));
+
+        }
     }
 
 
     public void mostrarPasajes(){
-        System.out.println("Lista de pasajes completa: ");
+        Visualizador.getInstancia().visualizarMensaje("Lista de pasajes completa: \n");
         for (Pasaje pasaje: this.listaPasajes){
-            System.out.println("");
-            System.out.println("----------------------------------------------");
-            System.out.println("Numero de reserva del pasaje: " + pasaje.getNumeroDeReserva());
-            System.out.println("Nombre del titular: " + pasaje.getNombre());
-            System.out.println("ID del vuelo: " + pasaje.getVuelo().getId());
-            System.out.println("Cantidad de asientos reservados: " + pasaje.getCantAsientosReservados());
-            System.out.println("Monto final: " + pasaje.getMontoFinal());
-            System.out.println("Metodo de pago: " + pasaje.getMetodoDePago().getNombre());
-            System.out.println("----------------------------------------------");
-            System.out.println("");
+            Visualizador.getInstancia().visualizarMensaje(
+            ("---------------------------------------------- \n") +
+            ("Numero de reserva del pasaje: " + pasaje.getNumeroDeReserva() + "\n") +
+            ("Nombre del titular: " + pasaje.getNombre() + "\n") + 
+            ("ID del vuelo: " + pasaje.getVuelo().getId() + "\n") +
+            ("Cantidad de asientos reservados: " + pasaje.getCantAsientosReservados() + "\n") +
+            ("Monto final: " + pasaje.getMontoFinal() + "\n") +
+            ("Metodo de pago: " + pasaje.getMetodoDePago().getNombre() + "\n") +
+            ("---------------------------------------------- \n"));
+            
 
         }
 
     }
-    //for (Aerolinea aerolinea: this.listaAerolineas){
-        //System.out.println(this.listaAerolineas.indexOf(aerolinea) + "-" + aerolinea.getNombre());
+    //--------------------------------------Menu Principal--------------------------------------------------------------//
+
+    public void menuPrincipal(){
+        boolean sigoEjecutando = true;
+        int opcionSeleccionada = 9999;
+
+        while(sigoEjecutando){
+                Visualizador.getInstancia().visualizarMensaje(("Bienvenido a la app de " + this.nombre + " \n  \n") +
+                ("Usted podra filtrar entre todos los vuelos de la compañia y reservar su vuelo \n") +
+                ("Seleccione la opcion deseada: \n" ) +
+                ("0) Terminar el programa \n") +
+                ("1) Buscar y filtrar vuelos \n") +
+                ("2) Reservar su pasaje \n"));
+                opcionSeleccionada = inputMenu();
+                sigoEjecutando = llamarMetodoMenu(opcionSeleccionada);
+
+        }
+    }
+    private boolean llamarMetodoMenu(int opcion){
+
+        Set<Vuelo> misVuelos = new HashSet<>();
+        boolean sigoEjecutando = true;
+
+        if(opcion == 1){
+            misVuelos = menuFiltradoVuelos();
+            this.mostrarIDVuelos(misVuelos);
+
+        } else if(opcion == 2){
+            solicitarPasaje();
+
+        }  else {
+            Visualizador.getInstancia().visualizarMensaje("Muchas gracias por elegirnos!");
+            sigoEjecutando = false;
+        }
+        return sigoEjecutando;
+    }
+    private int inputMenu(){
+        Scanner scanner = new Scanner(System.in);
+        int seleccion = 0;
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            if (scanner.hasNextInt()) {
+                seleccion = scanner.nextInt();
+                if (seleccion >= 0 && seleccion <= 2) {
+                    entradaValida = true;
+                } else {
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 2 como maximo");
+                }
+            } else {
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                scanner.next();
+            }
+        }
+        return seleccion;
+    }
 
     //--------------------------------------Menu Filtrado---------------------------------------------------------------//
 
-    public Set<Vuelo> menuFiltradoVuelos(){
-        System.out.println("Seleccione la opcion deseada para filtrar su vuelo: ");
-        System.out.println("");
-        System.out.println("--------------------------------------------------------");
-        System.out.println("1) Filtrar por fecha");
-        System.out.println("2) Filtrar por origen y destino");
-        System.out.println("3) Filtrar por duracion");
-        System.out.println("4) Filtrar por aerolinea");
-        System.out.println("5) Filtrar por cantidad de escalas maximas");
-        System.out.println("--------------------------------------------------------");
-        System.out.println("");
+    private Set<Vuelo> menuFiltradoVuelos(){
+
+        Visualizador.getInstancia().visualizarMensaje(("Seleccione la opcion deseada para filtrar su vuelo: \n") + 
+        ("-------------------------------------------------------- \n") + 
+        ("1) Filtrar por fecha \n") +
+        ("2) Filtrar por origen y destino \n") +
+        ("3) Filtrar por duracion \n") +
+        ("4) Filtrar por aerolinea \n") + 
+        ("5) Filtrar por cantidad de escalas maximas \n") +
+        ("-------------------------------------------------------- \n"));
         int opcionSeleccionada = opcionSeleccionadaFiltrar();
         Set<Vuelo> vuelosFiltrados = llamarMetodo(opcionSeleccionada);
         return vuelosFiltrados;
@@ -99,32 +169,32 @@ public class Empresa {
                 if (seleccion >= 1 && seleccion <= 5) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 1 como minimo y 5 como maximo");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 1 como minimo y 5 como maximo");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
         return seleccion;
     }
 
-    public void mostrarIDVuelos(Set<Vuelo> misVuelos){
+    private void mostrarIDVuelos(Set<Vuelo> misVuelos){
         if (misVuelos.size() == 0){
-            System.out.println("");
-            System.out.println("-------------------------------------------------------------------------------------");
-            System.out.println("No se encontraron vuelos disponibles con su criterio de filtrado. Intente nuevamente :)");
-            System.out.println("-------------------------------------------------------------------------------------");
-            System.out.println("");
+            Visualizador.getInstancia().visualizarMensaje(("-------------------------------------------------------------------------------------\n " ) +
+            ("No se encontraron vuelos disponibles con su criterio de filtrado. Intente nuevamente :) \n") +
+            ("------------------------------------------------------------------------------------- \n ") +
+            ("\n" ));
         } else{
-            System.out.println("");
-            System.out.println("---------------------------------------------");
-            System.out.println(("        IDs de mis vuelos filtrados:      "));
-            misVuelos.forEach(vuelo -> System.out.println(vuelo.getId()));
-            System.out.println("---------------------------------------------");
-            System.out.println("");
+            List<Vuelo> listaVuelos = new ArrayList<>(misVuelos);
+            listaVuelos.sort(Comparator.comparingInt(Vuelo::getId));
+            Visualizador.getInstancia().visualizarMensaje(("--------------------------------------------- \n") +
+            (("        IDs de mis vuelos filtrados:      \n")));
+            listaVuelos.forEach(vuelo -> Visualizador.getInstancia().visualizarMensaje(vuelo.getId()));
+            Visualizador.getInstancia().visualizarMensaje("---------------------------------------------");
+
         }
     }
 
@@ -144,16 +214,15 @@ public class Empresa {
         boolean entradaValida = false;
 
         while (!entradaValida) {
-            System.out.println("");
-            System.out.println("Ingrese una fecha en formato dd/MM/yyyy:");
+            Visualizador.getInstancia().visualizarMensaje("Ingrese una fecha en formato dd/MM/yyyy: \n");
             fechaIngresada = scanner.nextLine();
 
             if (esFormatoFechaValido(fechaIngresada)) {
                 entradaValida = true;
                 return fechaIngresada;
             } else {
-                System.out.println("");
-                System.out.println("La fecha ingresada no tiene el formato correcto (dd/MM/yyyy). Por favor, intente nuevamente.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La fecha ingresada no tiene el formato correcto (dd/MM/yyyy). Por favor, intente nuevamente.");
             }
         }
 
@@ -180,16 +249,16 @@ public class Empresa {
     //Filtrar por origen y destino
     private Set<Vuelo> filtrarOrigenDestino() {
 
-        System.out.println("Seleccione la ciudad de origen: ");
+        Visualizador.getInstancia().visualizarMensaje("Seleccione la ciudad de origen: ");
         for (Ciudad ciudad: this.listaCiudades){
-            System.out.println(this.listaCiudades.indexOf(ciudad) + "-" + ciudad.getNombre());
+            Visualizador.getInstancia().visualizarMensaje(this.listaCiudades.indexOf(ciudad) + "-" + ciudad.getNombre());
         }
         int origenIndex = inputCiudad();
         Ciudad origen = listaCiudades.get(origenIndex);
 
-        System.out.println("Seleccione la ciudad de destino: ");
+        Visualizador.getInstancia().visualizarMensaje("Seleccione la ciudad de destino: ");
         for (Ciudad ciudad: this.listaCiudades){
-            System.out.println(this.listaCiudades.indexOf(ciudad) + "-" + ciudad.getNombre());
+            Visualizador.getInstancia().visualizarMensaje(this.listaCiudades.indexOf(ciudad) + "-" + ciudad.getNombre());
         }
         int destinoIndex = inputCiudad();
         Ciudad destino = listaCiudades.get(destinoIndex);
@@ -211,12 +280,12 @@ public class Empresa {
                 if (seleccion >= 0 && seleccion <= 6) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 6 como maximo");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 6 como maximo");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
@@ -233,8 +302,8 @@ public class Empresa {
                 collect(Collectors.toSet());
     }
     private int opcionSeleccionadaDuracion(){
-        System.out.println("");
-        System.out.println("Ingrese la duracion maxima desea para su vuelo en horas: ");
+        Visualizador.getInstancia().saltoDeLinea();
+        Visualizador.getInstancia().visualizarMensaje("Ingrese la duracion maxima desea para su vuelo en horas: ");
         Scanner scanner = new Scanner(System.in);
         int seleccion = 0;
         boolean entradaValida = false;
@@ -245,12 +314,12 @@ public class Empresa {
                 if (seleccion >= 1 && seleccion <= 24) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese como minimo 1 y como maximo 24 ");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese como minimo 1 y como maximo 24 ");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
@@ -261,9 +330,10 @@ public class Empresa {
 
     private Set<Vuelo> filtrarPorAerolinea() {
 
-        System.out.println("Seleccione la aerolinea deseada: ");
+        Visualizador.getInstancia().saltoDeLinea();
+        Visualizador.getInstancia().visualizarMensaje("Seleccione la aerolinea deseada: ");
         for (Aerolinea aerolinea: this.listaAerolineas){
-            System.out.println(this.listaAerolineas.indexOf(aerolinea) + "-" + aerolinea.getNombre());
+            Visualizador.getInstancia().visualizarMensaje(this.listaAerolineas.indexOf(aerolinea) + "-" + aerolinea.getNombre());
         }
         int aerolineaIndex = inputAerolinea();
         Aerolinea aerolinea = listaAerolineas.get(aerolineaIndex);
@@ -286,12 +356,12 @@ public class Empresa {
                 if (seleccion >= 0 && seleccion <= 2) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 2 como maximo");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 2 como maximo");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
@@ -307,8 +377,8 @@ public class Empresa {
                 collect(Collectors.toSet());
     }
     private int opcionSeleccionadaEscalas(){
-        System.out.println("");
-        System.out.println("Ingrese la cantidad maxima de escalas: ");
+        Visualizador.getInstancia().saltoDeLinea();
+        Visualizador.getInstancia().visualizarMensaje("Ingrese la cantidad maxima de escalas: ");
         Scanner scanner = new Scanner(System.in);
         int seleccion = 0;
         boolean entradaValida = false;
@@ -319,12 +389,12 @@ public class Empresa {
                 if (seleccion >= 0 && seleccion <= 3) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 3 como maximo");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 0 como minimo y 3 como maximo");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
@@ -340,7 +410,7 @@ public class Empresa {
     //Si existe, muestro el precio y realizo la comprobacion del pago
     //Si el pago se hizo correctamente imprimo el pasaje
     //Lo guardo en mi set de pasajes
-    public void solicitarPasaje() { //aca pido la cantidad de pasajes que voy a querer, muestro el precio total y confirmo la compra
+    private void solicitarPasaje() {
 
         String persona = inputPersona();
 
@@ -351,8 +421,8 @@ public class Empresa {
             int idRecibido = inputID();
             optionalVuelo = getVueloByID(idRecibido);
             if (optionalVuelo.isEmpty()){
-                System.out.println("");
-                System.out.println("El ID que ingreso no es valido. Ingrese uno valido por favor.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("El ID que ingreso no es valido. Ingrese uno valido por favor.");
 
             }
         }
@@ -368,11 +438,11 @@ public class Empresa {
             Pasaje pasajeNuevo = generarPasaje(vuelo, persona, cantidadPasajes, metodoSeleccionado);
             pasajeNuevo.setNumeroDeReserva(generarNumeroReserva());
             pasajeNuevo.setMontoFinal(precioAPagar);
-        } else {
-            System.out.println("");
-            System.out.println("El pago no fue realizado correctamente. Intentenlo nuevamente por favor.");
-        }
 
+        } else {
+            Visualizador.getInstancia().saltoDeLinea();
+            Visualizador.getInstancia().visualizarMensaje("El pago no fue realizado correctamente. Intentenlo nuevamente por favor.");
+        }
     }
 
     private String inputPersona() {
@@ -381,16 +451,16 @@ public class Empresa {
         boolean entradaValida = false;
 
         while (!entradaValida) {
-            System.out.println("");
-            System.out.println("Ingrese el nombre del titular del pasaje:");
+            Visualizador.getInstancia().saltoDeLinea();
+            Visualizador.getInstancia().visualizarMensaje("Ingrese el nombre del titular del pasaje:");
             nombre = scanner.nextLine();
 
             if (esNombreValido(nombre)) {
                 entradaValida = true;
                 return nombre;
             } else {
-                System.out.println("");
-                System.out.println("El nombre ingresado no es válido. Por favor, intente nuevamente.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("El nombre ingresado no es válido. Por favor, intente nuevamente.");
             }
         }
 
@@ -407,7 +477,7 @@ public class Empresa {
         //  +: Esto es un cuantificador que significa "uno o más" de los caracteres anteriores. Es decir, la cadena debe contener al menos uno de los caracteres especificados en [a-zA-Z\\s].
     private int inputID(){
 
-        System.out.println("Ingrese el ID del vuelo que desea comprar: ");
+        Visualizador.getInstancia().visualizarMensaje("Ingrese el ID del vuelo que desea comprar: ");
         Scanner scanner = new Scanner(System.in);
         int seleccion = 0;
         boolean entradaValida = false;
@@ -418,12 +488,12 @@ public class Empresa {
                 if (seleccion > 0) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 1 como minimo.");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 1 como minimo.");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
@@ -431,7 +501,7 @@ public class Empresa {
     }
     private int inputCantPasajes(){
 
-        System.out.println("Ingrese la cantidad de pasajes que desea comprar: ");
+        Visualizador.getInstancia().visualizarMensaje("Ingrese la cantidad de pasajes que desea comprar: ");
         Scanner scanner = new Scanner(System.in);
         int seleccion = 0;
         boolean entradaValida = false;
@@ -442,12 +512,12 @@ public class Empresa {
                 if (seleccion > 0) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 1 como minimo.");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 1 como minimo.");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
@@ -456,9 +526,9 @@ public class Empresa {
 
     private MetodoDePago metodoDePagoElegido(){
 
-        System.out.println("Seleccione el metodo de pago deseado para realizar su compra: ");
+        Visualizador.getInstancia().visualizarMensaje("Seleccione el metodo de pago deseado para realizar su compra: ");
         for (MetodoDePago metodo: this.listaMetodosDePago){
-            System.out.println(this.listaMetodosDePago.indexOf(metodo) + "-" + metodo.getNombre());
+            Visualizador.getInstancia().visualizarMensaje(this.listaMetodosDePago.indexOf(metodo) + "-" + metodo.getNombre());
         }
         int metodoIndex = inputMetodoDePago();
         return  listaMetodosDePago.get(metodoIndex);
@@ -476,31 +546,30 @@ public class Empresa {
                 if (seleccion >= 0) {
                     entradaValida = true;
                 } else {
-                    System.out.println("");
-                    System.out.println("El numero ingresado no es valido. Por favor, ingrese 0 como minimo.");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 0 como minimo.");
                 }
             } else {
-                System.out.println("");
-                System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                Visualizador.getInstancia().saltoDeLinea();
+                Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                 scanner.next();
             }
         }
         return seleccion;
     }
-    public int mostrarPrecios(Vuelo vueloSeleccionado, int cantPasajes) { //Voy a mostrar los precios disponibles y espero recibir un 1 2 o 3 dependiendo del asiento deseado
+    private int mostrarPrecios(Vuelo vueloSeleccionado, int cantPasajes) { //Voy a mostrar los precios disponibles y espero recibir un 1 2 o 3 dependiendo del asiento deseado
 
-        System.out.println("Los precios de asientos para su vuelo seleccionado son:");
-        System.out.println("");
-        System.out.println("1) Precio Economy: " + vueloSeleccionado.getPrecioEconomy());
-        System.out.println("2) Precio Super: " + vueloSeleccionado.getPrecioSuper());
-        System.out.println("3) Precio Primera: " + vueloSeleccionado.getPrecioPrimera());
-        System.out.println("-----------------------------------------------------------");
-        System.out.print("Seleccione el tipo de asiento (1, 2, o 3): ");
+        Visualizador.getInstancia().visualizarMensaje(("Los precios de asientos para su vuelo seleccionado son: \n") +
+        ("1) Precio Economy: " + vueloSeleccionado.getPrecioEconomy() + "\n") +
+        ("2) Precio Super: " + vueloSeleccionado.getPrecioSuper() + "\n") +
+        ("3) Precio Primera: " + vueloSeleccionado.getPrecioPrimera() + "\n") +
+        ("-----------------------------------------------------------"));
+
+        Visualizador.getInstancia().visualizarMensaje("Seleccione el tipo de asiento (1, 2, o 3): \n");
 
         int precioFinal = devolverPrecio(vueloSeleccionado,cantPasajes);
-        System.out.println(" ");
-        System.out.println("Su precio final es de: " + precioFinal + " para " + cantPasajes + " pasajes con nivel de equipaje " + vueloSeleccionado.getEquipajeVuelo().getNombre() );
-        System.out.println(" ");
+
+        Visualizador.getInstancia().visualizarMensaje("Su precio final es de: " + precioFinal + " para " + cantPasajes + " pasajes con nivel de equipaje " + vueloSeleccionado.getEquipajeVuelo().getNombre() + "\n");
         return precioFinal;
 
 
@@ -530,12 +599,12 @@ public class Empresa {
                     if (seleccion >= 1 && seleccion <= 3) {
                         entradaValida = true;
                     } else {
-                        System.out.println("");
-                        System.out.println("El numero ingresado no es valido. Por favor, ingrese 1, 2, o 3 ");
+                        Visualizador.getInstancia().saltoDeLinea();
+                        Visualizador.getInstancia().visualizarMensaje("El numero ingresado no es valido. Por favor, ingrese 1, 2, o 3 ");
                     }
                 } else {
-                    System.out.println("");
-                    System.out.println("La opcion ingresada no es valida. Por favor, ingrese un número.");
+                    Visualizador.getInstancia().saltoDeLinea();
+                    Visualizador.getInstancia().visualizarMensaje("La opcion ingresada no es valida. Por favor, ingrese un número.");
                     scanner.next();
                 }
             }
@@ -546,27 +615,27 @@ public class Empresa {
     private boolean verificarPago(int precio, MetodoDePago metodoDePago){ //Aca deberia ir el proceso de verificacion de compra
         boolean pagoConfirmado = false;
         try {
-            System.out.println("Su pago de " + precio + " se procesará con su método de pago " + metodoDePago.getNombre());
+            Visualizador.getInstancia().visualizarMensaje("Su pago de " + precio + " se procesará con su método de pago " + metodoDePago.getNombre());
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("Procesando su pago");
+            Visualizador.getInstancia().visualizarMensaje("Procesando su pago");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println(".");
+            Visualizador.getInstancia().visualizarMensaje(".");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("..");
+            Visualizador.getInstancia().visualizarMensaje("..");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("...");
+            Visualizador.getInstancia().visualizarMensaje("...");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println(".");
+            Visualizador.getInstancia().visualizarMensaje(".");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("..");
+            Visualizador.getInstancia().visualizarMensaje("..");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("...");
+            Visualizador.getInstancia().visualizarMensaje("...");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("...");
+            Visualizador.getInstancia().visualizarMensaje("...");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("Sigue procesando...");
+            Visualizador.getInstancia().visualizarMensaje("Sigue procesando...");
             Thread.sleep(1000); // Pausa de 1 segundo
-            System.out.println("Su pago se realizó correctamente :)");
+            Visualizador.getInstancia().visualizarMensaje("Su pago se realizó correctamente :)");
             pagoConfirmado = true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -586,7 +655,7 @@ public class Empresa {
 
 
 
-    public Pasaje generarPasaje(Vuelo vuelo, String persona, int cantAsientos, MetodoDePago metodoDePago){ // puedo hacer que esta funcion solo lo genere recibiendo un booleano de pago confirmado
+    private Pasaje generarPasaje(Vuelo vuelo, String persona, int cantAsientos, MetodoDePago metodoDePago){ // puedo hacer que esta funcion solo lo genere recibiendo un booleano de pago confirmado
 
         Pasaje pasaje = new Pasaje(persona, vuelo, cantAsientos, metodoDePago);
         listaPasajes.add(pasaje);
@@ -598,5 +667,6 @@ public class Empresa {
         Random random = new Random();
         return 100000 + random.nextInt(900000);
     }
+
 
 }

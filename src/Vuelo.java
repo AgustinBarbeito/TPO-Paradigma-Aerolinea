@@ -148,4 +148,5 @@ public class Vuelo {
     public Equipaje getEquipajeVuelo() {
         return equipajeVuelo;
     }
+
 }
